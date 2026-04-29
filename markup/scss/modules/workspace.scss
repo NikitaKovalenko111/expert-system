@@ -1,0 +1,70 @@
+@use '../variables' as *;
+
+.workspace__inner {
+  width: min($page-width, calc(100% - 2 * $page-gutter));
+  margin: 0 auto;
+}
+
+.workspace__grid {
+  display: grid;
+  gap: 14px;
+}
+
+.workspace__panel {
+  display: grid;
+  gap: 18px;
+}
+
+.workspace__panel-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.workspace__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.workspace__panel--export {
+  background: linear-gradient(180deg, rgba(79, 124, 255, 0.12), rgba(255, 255, 255, 0.88));
+}
+
+.workspace__code {
+  margin: 0;
+  padding: 18px;
+  border-radius: $radius-md;
+  border: 1px solid rgba(22, 32, 43, 0.08);
+  background: rgba(12, 18, 27, 0.95);
+  color: #eaf1ff;
+  font-size: 13px;
+  line-height: 1.6;
+  overflow: auto;
+}
+
+.workspace__download {
+  width: fit-content;
+}
+
+@media (min-width: 768px) {
+  .workspace__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .workspace__panel--export {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 1024px) {
+  .workspace__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .workspace__panel--export {
+    grid-column: auto;
+  }
+}

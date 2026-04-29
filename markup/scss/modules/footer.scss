@@ -1,0 +1,9 @@
+@use '../variables' as *;
+
+.site-footer__inner {
+  width: min($page-width, calc(100% - 2 * $page-gutter));
+}
+
+.site-footer__text {
+  max-width: 52ch;
+}

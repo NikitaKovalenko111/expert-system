@@ -1,0 +1,162 @@
+.graph-stage {
+  display: grid;
+  gap: 12px;
+}
+
+.graph-stage__hint {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+}
+
+.graph-stage__viewport {
+  position: relative;
+  overflow: hidden;
+  min-height: 680px;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 15% 15%, rgba(109, 155, 255, 0.12), transparent 24%),
+    radial-gradient(circle at 80% 14%, rgba(134, 241, 199, 0.12), transparent 20%),
+    linear-gradient(180deg, rgba(11, 16, 28, 0.82), rgba(12, 19, 32, 0.92));
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  touch-action: none;
+  cursor: grab;
+}
+
+.graph-stage__viewport:active {
+  cursor: grabbing;
+}
+
+.graph-stage__surface {
+  position: relative;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+.graph-stage__edges,
+.graph-stage__nodes {
+  position: absolute;
+  inset: 0;
+}
+
+.graph-edge__path {
+  fill: none;
+  stroke: rgba(109, 155, 255, 0.65);
+  stroke-width: 2.2;
+}
+
+.graph-edge__label {
+  fill: #86f1c7;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.graph-node {
+  position: absolute;
+  display: grid;
+  gap: 6px;
+  padding: 18px 16px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(180deg, rgba(25, 35, 53, 0.94), rgba(17, 24, 39, 0.96));
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28);
+  color: #eef3ff;
+  text-align: left;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background-color 180ms ease;
+}
+
+.graph-node:hover,
+.graph-node--selected {
+  transform: translateY(-2px);
+  border-color: rgba(109, 155, 255, 0.35);
+  box-shadow: 0 24px 54px rgba(0, 0, 0, 0.34);
+}
+
+.graph-node--question {
+  border-radius: 999px;
+}
+
+.graph-node--factor {
+  background: linear-gradient(180deg, rgba(23, 33, 52, 0.95), rgba(20, 27, 43, 0.96));
+}
+
+.graph-node--goal {
+  background: linear-gradient(180deg, rgba(22, 38, 34, 0.95), rgba(16, 25, 32, 0.96));
+}
+
+.graph-node--violet {
+  box-shadow: 0 18px 42px rgba(109, 155, 255, 0.08);
+}
+
+.graph-node--blue {
+  box-shadow: 0 18px 42px rgba(74, 143, 255, 0.12);
+}
+
+.graph-node--teal {
+  box-shadow: 0 18px 42px rgba(60, 206, 191, 0.12);
+}
+
+.graph-node--green {
+  box-shadow: 0 18px 42px rgba(134, 241, 199, 0.1);
+}
+
+.graph-node--amber {
+  box-shadow: 0 18px 42px rgba(255, 202, 106, 0.1);
+}
+
+.graph-node--rose {
+  box-shadow: 0 18px 42px rgba(255, 125, 138, 0.1);
+}
+
+.graph-node__kind {
+  color: rgba(255, 255, 255, 0.56);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.graph-node__title {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.graph-node__subtitle {
+  color: rgba(238, 243, 255, 0.68);
+  font-size: 12px;
+}
+
+.tree-list__button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.tree-list__button:focus-visible,
+.graph-node:focus-visible,
+.button:focus-visible,
+.modal-window__close:focus-visible {
+  outline: 2px solid rgba(134, 241, 199, 0.85);
+  outline-offset: 2px;
+}
+
+.tree-list__item--active .tree-list__button {
+  color: #07101f;
+}
+
+@media (min-width: 768px) {
+  .graph-stage__viewport {
+    min-height: 760px;
+  }
+}

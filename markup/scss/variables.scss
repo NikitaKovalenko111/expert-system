@@ -1,0 +1,29 @@
+// Color system
+$color-bg: #eef3f8;
+$color-surface: rgba(255, 255, 255, 0.84);
+$color-surface-strong: #ffffff;
+$color-text: #16202b;
+$color-text-muted: #667487;
+$color-accent: #4f7cff;
+$color-accent-soft: #dfe7ff;
+$color-accent-strong: #2d54d8;
+$color-success: #2f9d6a;
+$color-warning: #d18a1c;
+$color-border: rgba(22, 32, 43, 0.1);
+
+// Typography
+$font-main: 'Manrope', sans-serif;
+$font-display: 'Fraunces', serif;
+
+// Radius and shadow
+$radius-xl: 32px;
+$radius-lg: 28px;
+$radius-md: 20px;
+$radius-sm: 14px;
+$shadow-soft: 0 24px 60px rgba(19, 33, 56, 0.08);
+$shadow-strong: 0 24px 60px rgba(19, 33, 56, 0.14);
+
+// Layout
+$page-width: 1120px;
+$page-gutter: 16px;
+

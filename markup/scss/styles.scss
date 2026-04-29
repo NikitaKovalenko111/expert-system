@@ -1,0 +1,15 @@
+@use 'variables' as *;
+@use 'base/reset';
+@use 'base/global';
+@use 'modules/header';
+@use 'modules/hero';
+@use 'modules/capabilities';
+@use 'modules/tree';
+@use 'modules/workspace';
+@use 'modules/footer';
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap');
+
+body {
+  font-family: $font-main;
+}

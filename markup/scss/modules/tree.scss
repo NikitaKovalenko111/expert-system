@@ -1,0 +1,117 @@
+@use '../variables' as *;
+
+.tree__inner {
+  width: min($page-width, calc(100% - 2 * $page-gutter));
+  margin: 0 auto;
+}
+
+.tree__canvas {
+  display: grid;
+  gap: 18px;
+  padding: 22px;
+}
+
+.tree-node {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  padding: 24px;
+  text-align: center;
+  border: 1px solid rgba(22, 32, 43, 0.1);
+  border-radius: 50%;
+  background: radial-gradient(circle at top, rgba(79, 124, 255, 0.12), rgba(255, 255, 255, 0.92) 68%);
+  box-shadow: $shadow-soft;
+  aspect-ratio: 1;
+}
+
+.tree-node--root {
+  width: min(100%, 320px);
+  margin: 0 auto;
+}
+
+.tree-node--child {
+  width: min(100%, 280px);
+}
+
+.tree-node__title {
+  max-width: 16ch;
+  font-family: $font-display;
+  font-size: clamp(22px, 3vw, 30px);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.tree__branches {
+  display: grid;
+  gap: 16px;
+}
+
+.tree-branch {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+}
+
+.tree-branch__answer {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 66px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(47, 157, 106, 0.1);
+  color: $color-success;
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tree-branch--no .tree-branch__answer {
+  background: rgba(209, 138, 28, 0.12);
+  color: $color-warning;
+}
+
+.tree-branch__line {
+  position: relative;
+  width: 2px;
+  height: 48px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(79, 124, 255, 0.65), rgba(79, 124, 255, 0.18));
+}
+
+.tree-branch__line::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -1px;
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid rgba(79, 124, 255, 0.65);
+  border-bottom: 2px solid rgba(79, 124, 255, 0.65);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.tree-branch__result {
+  max-width: 28ch;
+  text-align: center;
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  .tree__canvas {
+    padding: 28px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .tree__branches {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: 24px;
+  }
+
+  .tree__canvas {
+    gap: 24px;
+  }
+}
