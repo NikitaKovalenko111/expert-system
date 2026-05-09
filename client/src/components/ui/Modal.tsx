@@ -10,6 +10,9 @@ interface ModalProps {
 }
 
 function Modal({ id, title, description, isOpen, onClose, children }: ModalProps) {
+  if (id.includes('add-')) {
+    console.log(`🟢 Modal ${id} rendering with isOpen=${isOpen}`)
+  }
   return (
     <div className={`modal${isOpen ? ' is-open' : ''}`} id={id} aria-hidden={!isOpen}>
       <button className="modal__backdrop" type="button" aria-label={`Закрыть ${title}`} onClick={onClose} />
