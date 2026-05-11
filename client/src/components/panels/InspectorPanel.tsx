@@ -4,11 +4,12 @@ import type { DecisionNode, DecisionNodeKind } from '../../api/decisionTree'
 interface InspectorPanelProps {
   selectedNode: DecisionNode
   embedded?: boolean
+  connectionLabel?: string | null
   onDeleteNode?: (nodeId: string) => void
   onUpdateNode?: (nodeId: string, updates: Partial<DecisionNode>) => void
 }
 
-function InspectorPanel({ selectedNode, embedded = false, onDeleteNode, onUpdateNode }: InspectorPanelProps) {
+function InspectorPanel({ selectedNode, connectionLabel, embedded = false, onDeleteNode, onUpdateNode }: InspectorPanelProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [editTitle, setEditTitle] = useState(selectedNode.title)
   const [editSubtitle, setEditSubtitle] = useState(selectedNode.subtitle)
@@ -107,6 +108,15 @@ function InspectorPanel({ selectedNode, embedded = false, onDeleteNode, onUpdate
             readOnly={!isEditing}
           />
         </label>
+      </div>
+
+      <div className="inspector__grid">
+        <div className="inspector__row">
+          <span style={{ color: 'rgba(18, 35, 59, 0.55)' }}>Текст связи</span>
+          <span className="inspector__value" style={{ color: '#12233b' }}>
+            {connectionLabel && connectionLabel.trim().length ? connectionLabel : 'Нет входящей связи'}
+          </span>
+        </div>
       </div>
 
       <div className="modal-window__actions">

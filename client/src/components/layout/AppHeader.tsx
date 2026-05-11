@@ -1,5 +1,7 @@
+import favicon from './../../../public/favicon.png'
 interface AppHeaderProps {
   onExport: () => void
+  onExportRules?: () => void
   onOpenProject: () => void
   onImport?: () => void
   onTesting?: () => void
@@ -7,15 +9,15 @@ interface AppHeaderProps {
   projectTitle?: string
 }
 
-function AppHeader({ onExport, onOpenProject, onImport, onTesting, onNewProject, projectTitle }: AppHeaderProps) {
+function AppHeader({ onExport, onExportRules, onOpenProject, onImport, onTesting, onNewProject, projectTitle }: AppHeaderProps) {
   return (
     <header className="topbar">
       <div className="topbar__inner">
         <a className="brand" href="#workspace" aria-label="Expert System Workbench">
-          <span className="brand__mark">ЭС</span>
+          <img src={favicon} className="brand__mark" />
           <span className="brand__text">
-            <span className="brand__title">Expert System</span>
-            <span className="brand__subtitle">Workbench для дерева решений</span>
+            <span className="brand__title">Экспертная система</span>
+            <span className="brand__subtitle">Рабочая панель для дерева решений</span>
           </span>
         </a>
 
@@ -46,6 +48,11 @@ function AppHeader({ onExport, onOpenProject, onImport, onTesting, onNewProject,
           <button className="button button--ghost" type="button">
             Сохранить
           </button>
+          {onExportRules ? (
+            <button className="button button--ghost" type="button" onClick={onExportRules}>
+              Экспорт Правил
+            </button>
+          ) : null}
           <button className="button button--primary" type="button" onClick={onExport}>
             Экспорт JSON
           </button>

@@ -166,14 +166,10 @@ p {
 .brand__mark {
   display: grid;
   place-items: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, var(--accent), #5f2ff0);
+  width: 60px;
   color: #fff;
   font-weight: 900;
   letter-spacing: 0.08em;
-  box-shadow: 0 14px 30px rgba(77, 25, 204, 0.18);
 }
 
 .brand__text {
@@ -762,14 +758,11 @@ p {
   display: grid;
   place-items: center;
   padding: 40px 24px;
-  opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transition: opacity 220ms ease, visibility 220ms ease;
 }
 
 .modal.is-open {
-  opacity: 1;
   visibility: visible;
   pointer-events: auto;
 }
@@ -779,18 +772,13 @@ p {
   inset: 0;
   background: rgba(5, 9, 18, 0.72);
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .modal-window {
   position: relative;
   z-index: 1;
   width: min(100%, 520px);
-  transform: translateY(18px) scale(0.98);
-  transition: transform 220ms ease, opacity 220ms ease;
-}
-
-.modal.is-open .modal-window {
-  transform: translateY(0) scale(1);
 }
 
 .modal-window--goal {

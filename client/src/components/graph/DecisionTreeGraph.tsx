@@ -49,6 +49,32 @@ const pointToPath = (points: { x: number; y: number }[]) => {
 function DecisionTreeGraph({ nodes, edges, selectedNodeId, onSelectNode, onAddNodeConnected, onCreateFirstNode }: DecisionTreeGraphProps) {
   const [transform, setTransform] = useState<TransformState>({ scale: 0.72, translateX: 52, translateY: 48 })
   const dragState = useRef<{ startX: number; startY: number; translateX: number; translateY: number } | null>(null)
+  const scale = transform.scale
+  const translateX = Math.round(transform.translateX)
+  const translateY = Math.round(transform.translateY)
+  const nodeTitleFontSize = Math.max(6, Math.round(16 * scale * scale))
+  const nodeKindFontSize = Math.max(5, Math.round(10 * scale * scale))
+  const nodeGap = Math.max(4, Math.round(8 * scale))
+  const nodePaddingX = Math.max(10, Math.round(20 * scale))
+  const nodePaddingY = Math.max(14, Math.round(28 * scale))
+  const edgeLabelFontSize = Math.max(5, Math.round(10 * scale * scale))
+  const edgeLabelPaddingX = Math.max(4, Math.round(8 * scale))
+  const edgeLabelHeight = Math.max(14, Math.round(20 * scale))
+  const edgeLabelRadius = Math.max(7, Math.round(10 * scale))
+  const edgeLabelTextLimit = Math.max(3, Math.round(8 / Math.max(scale, 0.42)))
+
+  const projectX = (value: number) => Math.round(value * scale)
+  const projectY = (value: number) => Math.round(value * scale)
+
+  const trimTextToWidth = (text: string, maxWidth: number, fontSize: number, minLimit: number) => {
+    const approxCharWidth = fontSize * 0.62
+    const charLimit = Math.max(minLimit, Math.floor(maxWidth / approxCharWidth))
+    if (text.length <= charLimit) {
+      return text
+    }
+
+    return `${text.slice(0, Math.max(1, charLimit - 1))}…`
+  }
 
   const layout = useMemo(() => {
     // Handle empty graph
@@ -63,7 +89,7 @@ function DecisionTreeGraph({ nodes, edges, selectedNodeId, onSelectNode, onAddNo
 
     const graph = new dagre.graphlib.Graph()
 
-    graph.setGraph({ rankdir: 'LR', nodesep: 42, ranksep: 132, marginx: 48, marginy: 48 })
+    graph.setGraph({ rankdir: 'LR', nodesep: 42, ranksep: 200, marginx: 48, marginy: 48 })
     graph.setDefaultEdgeLabel(() => ({}))
 
     nodes.forEach((node) => {
@@ -193,6 +219,9 @@ function DecisionTreeGraph({ nodes, edges, selectedNodeId, onSelectNode, onAddNo
     dragState.current = null
   }
 
+  const scaledWidth = Math.max(1, Math.round(layout.width * scale))
+  const scaledHeight = Math.max(1, Math.round(layout.height * scale))
+
   return (
     <div className="graph-stage">
       <div className="graph-stage__hint">Колесо мыши масштабирует, а перетаскивание двигает дерево</div>
@@ -208,12 +237,12 @@ function DecisionTreeGraph({ nodes, edges, selectedNodeId, onSelectNode, onAddNo
         <div
           className="graph-stage__surface"
           style={{
-            width: `${layout.width}px`,
-            height: `${layout.height}px`,
-            transform: `translate(${transform.translateX}px, ${transform.translateY}px) scale(${transform.scale})`,
+            width: `${scaledWidth}px`,
+            height: `${scaledHeight}px`,
+            transform: `translate(${translateX}px, ${translateY}px)`,
           }}
         >
-          <svg className="graph-stage__edges" width={layout.width} height={layout.height} viewBox={`0 0 ${layout.width} ${layout.height}`} aria-hidden="true">
+          <svg className="graph-stage__edges" width={scaledWidth} height={scaledHeight} viewBox={`0 0 ${scaledWidth} ${scaledHeight}`} aria-hidden="true">
             <defs>
               <marker id="graph-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
                 <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(109, 155, 255, 0.8)" />
@@ -236,30 +265,34 @@ function DecisionTreeGraph({ nodes, edges, selectedNodeId, onSelectNode, onAddNo
                 const ny = dx / len
                 const offset = 12
 
-                labelX = p.x + nx * offset
-                labelY = p.y + ny * offset
+                labelX = projectX(p.x + nx * offset)
+                labelY = projectY(p.y + ny * offset)
               } else {
                 const mid = edge.points[Math.floor(edge.points.length / 2)] ?? edge.points[0]
-                labelX = mid.x
-                labelY = mid.y
+                labelX = projectX(mid.x)
+                labelY = projectY(mid.y)
               }
+
+              const scaledPoints = edge.points.map((point) => ({
+                x: projectX(point.x),
+                y: projectY(point.y),
+              }))
 
               return (
                 <g key={edge.id}>
-                  <path className="graph-edge__path" d={pointToPath(edge.points)} markerEnd="url(#graph-arrow)" />
+                  <path className="graph-edge__path" d={pointToPath(scaledPoints)} markerEnd="url(#graph-arrow)" />
                   {edge.label ? (() => {
                     const labelText = edge.label || ''
-                    // reduce horizontal padding so short labels (e.g. "ДА") aren't too roomy
-                    const labelPaddingX = 8
-                    const labelTextLimit = 14
-                    const displayLabelText = labelText.length > labelTextLimit ? `${labelText.slice(0, labelTextLimit - 1)}…` : labelText
-                    const labelBoxWidth = Math.min(180, Math.max(56, displayLabelText.length * 7 + labelPaddingX * 2))
+                    // scale the label box with zoom so it stays proportional to the graph
+                    const displayLabelText = trimTextToWidth(labelText, 76, edgeLabelFontSize, edgeLabelTextLimit)
+                    const labelBoxWidth = Math.min(180, Math.max(56, Math.round(displayLabelText.length * edgeLabelFontSize * 0.72 + edgeLabelPaddingX * 2)))
 
                     return (
-                      <g className="graph-edge__label-group">
-                        <title>{labelText}</title>
-                        <rect x={labelX - labelBoxWidth / 2} y={labelY - 20} width={labelBoxWidth} height={20} rx={10} ry={10} fill="rgba(255, 255, 255, 0.96)" stroke="rgba(77, 25, 204, 0.12)" />
-                        <text className="graph-edge__label" x={labelX} y={labelY - 6} textAnchor="middle">
+                      <g className="graph-edge__label-group" style={{ pointerEvents: 'auto' }}>
+                        <rect x={labelX - labelBoxWidth / 2} y={labelY - edgeLabelHeight} width={labelBoxWidth} height={edgeLabelHeight} rx={edgeLabelRadius} ry={edgeLabelRadius} fill="rgba(255, 255, 255, 0.96)" stroke="rgba(77, 25, 204, 0.12)" style={{ pointerEvents: 'auto' }}>
+                          <title>{labelText}</title>
+                        </rect>
+                        <text className="graph-edge__label" x={labelX} y={labelY - Math.round(edgeLabelHeight * 0.28)} textAnchor="middle" style={{ pointerEvents: 'none', fontSize: `${edgeLabelFontSize}px` }}>
                           {displayLabelText}
                         </text>
                       </g>
@@ -270,29 +303,37 @@ function DecisionTreeGraph({ nodes, edges, selectedNodeId, onSelectNode, onAddNo
             })}
           </svg>
 
-          <div className="graph-stage__nodes" style={{ width: `${layout.width}px`, height: `${layout.height}px` }}>
+          <div className="graph-stage__nodes" style={{ width: `${scaledWidth}px`, height: `${scaledHeight}px` }}>
             {layout.nodes.map((node) => (
               <div
                 key={node.id}
                 style={{
                   position: 'absolute',
-                  left: `${node.x - node.width / 2}px`,
-                  top: `${node.y - node.height / 2}px`,
-                  width: `${node.width}px`,
-                  height: `${node.height}px`,
+                  left: `${projectX(node.x - node.width / 2)}px`,
+                  top: `${projectY(node.y - node.height / 2)}px`,
+                  width: `${projectX(node.width)}px`,
+                  height: `${projectY(node.height)}px`,
                 }}
               >
+                {(() => {
+                  const nodeBoxWidth = Math.max(1, projectX(node.width) - nodePaddingX * 2)
+                  const displayNodeTitle = trimTextToWidth(node.title, nodeBoxWidth, nodeTitleFontSize, 3)
+
+                  return (
                 <button
                   type="button"
                   className={`graph-node graph-node--${node.kind} graph-node--${node.tone}${selectedNodeId === node.id ? ' graph-node--selected' : ''}`}
-                  style={{ width: '100%', height: '100%' }}
+                  style={{ width: '100%', height: '100%', gap: `${nodeGap}px`, padding: `${nodePaddingY}px ${nodePaddingX}px`, fontSize: `${nodeTitleFontSize}px` }}
                   onClick={() => onSelectNode(node.id)}
+                  title={node.title}
                 >
                   {node.kind === 'goal' ? (
-                    <span className="graph-node__kind">Цель</span>
+                    <span className="graph-node__kind" style={{ fontSize: `${nodeKindFontSize}px` }}>Цель</span>
                   ) : null}
-                  <span className="graph-node__title">{node.title}</span>
+                  <span className="graph-node__title" style={{ fontSize: `${nodeTitleFontSize}px` }}>{displayNodeTitle}</span>
                 </button>
+                  )
+                })()}
                 {onAddNodeConnected && node.kind !== 'goal' ? (
                   <button
                     type="button"

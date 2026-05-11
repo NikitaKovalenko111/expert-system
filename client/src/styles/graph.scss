@@ -39,7 +39,12 @@
   -webkit-user-select: none;
 }
 
-.graph-stage__edges,
+.graph-stage__edges {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
 .graph-stage__nodes {
   position: absolute;
   inset: 0;
@@ -49,6 +54,10 @@
   fill: none;
   stroke: rgba(77, 25, 204, 0.55);
   stroke-width: 2.2;
+}
+
+.graph-edge__label-group {
+  pointer-events: auto;
 }
 
 .graph-edge__label {

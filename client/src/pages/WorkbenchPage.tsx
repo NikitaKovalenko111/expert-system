@@ -1,5 +1,5 @@
 import { useMemo, useState, useRef, useEffect } from 'react'
-import { decisionTree, getDecisionNode, saveDecisionTree, loadDecisionTree } from '../api/decisionTree'
+import { decisionTree, getDecisionNode, saveDecisionTree, loadDecisionTree, exportRulesToText } from '../api/decisionTree'
 import type { DecisionNode } from '../api/decisionTree'
 import AppHeader from '../components/layout/AppHeader'
 import ProjectSidebar from '../components/layout/ProjectSidebar'
@@ -29,6 +29,13 @@ function WorkbenchPage() {
     if (!selectedNodeId) return null
     return getDecisionNode(selectedNodeId) ?? decisionTree.nodes[0] ?? null
   }, [selectedNodeId, treeVersion])
+
+  const selectedNodeConnectionLabel = useMemo(() => {
+    if (!selectedNode) return null
+
+    const incomingEdge = decisionTree.edges.find((edge) => edge.target === selectedNode.id)
+    return incomingEdge?.label ?? null
+  }, [selectedNode, treeVersion])
 
   // If there's no saved tree on first run, open New Project modal
   useEffect(() => {
@@ -346,11 +353,28 @@ function WorkbenchPage() {
     URL.revokeObjectURL(url)
   }
 
+  const handleExportRules = () => {
+    const rulesText = exportRulesToText()
+    if (!rulesText) {
+      alert('Нет правил для экспорта. Постройте дерево решений.')
+      return
+    }
+
+    const blob = new Blob([rulesText], { type: 'text/plain;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+
+    link.href = url
+    link.download = `${decisionTree.title || 'rules'}.txt`
+    link.click()
+    URL.revokeObjectURL(url)
+  }
+
   return (
     <div className="app">
       <div className="app__noise" aria-hidden="true" />
 
-      <AppHeader onExport={handleExport} onOpenProject={() => setActiveModal('project')} onImport={handleImportClick} projectTitle={decisionTree.title} onTesting={() => setActiveModal('testing')} onNewProject={() => setActiveModal('new-project')} />
+      <AppHeader onExport={handleExport} onExportRules={handleExportRules} onOpenProject={() => setActiveModal('project')} onImport={handleImportClick} projectTitle={decisionTree.title} onTesting={() => setActiveModal('testing')} onNewProject={() => setActiveModal('new-project')} />
 
       <input ref={fileInputRef} type="file" accept="application/json,.json" style={{ display: 'none' }} onChange={handleFileSelected} />
 
@@ -375,6 +399,7 @@ function WorkbenchPage() {
         {selectedNode && (
           <InspectorPanel
             selectedNode={selectedNode}
+            connectionLabel={selectedNodeConnectionLabel}
             embedded
             onDeleteNode={handleDeleteNodeCascade}
             onUpdateNode={handleUpdateNode}
